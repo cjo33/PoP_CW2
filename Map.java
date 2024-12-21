@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Map {
     /// This will find the text file
@@ -33,5 +34,33 @@ public class Map {
             map[i] = rows.get(i);
         }
         return map;
+    }
+
+    // This finds where all the gold is located on the map
+    public static List<int[]> findGoldCoords(char[][] dungeonMap) {
+        // Initialise our array list of coordinates
+        List<int[]> goldCoords = new ArrayList<>();
+        // Loop through each tile in the map and check if its a gold tile
+        // If so then add the coordinates of it to the list
+        for (int y = 0; y< dungeonMap.length; y++){
+            for (int x = 0; x < dungeonMap[y].length; x++) {
+                if (dungeonMap[y][x] == 'G'){
+                    goldCoords.add(new int[] { x, y });
+                }
+            }
+        }
+        // Return the array of gold coordinates
+        return goldCoords;
+    }
+
+    public static int[] findExitCoords(char[][] dungeonMap) {
+        for (int y = 0; y < dungeonMap.length; y++) {
+            for (int x = 0; x < dungeonMap[y].length; x++) {
+                if (dungeonMap[y][x] == 'E') {
+                    return new int[] { x, y }; // Return the coordinates of the exit tile
+                }
+            }
+        }
+        return null; // Return null if no exit tile is found
     }
 }
