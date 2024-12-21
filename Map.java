@@ -3,7 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class map_load {
+public class Map {
     /// This will find the text file
     /// Then go through each line and add it to an array
     
@@ -33,25 +33,5 @@ public class map_load {
             map[i] = rows.get(i);
         }
         return map;
-    }
-
-    // Print for testing
-    public static void printMap(char[][] map){
-        // Loop over each row
-        for (int i = 0; i < map.length; i++) {
-            // Loop over each character in the row
-            for (int j = 0; j < map[i].length; j++) {
-                System.out.print(map[i][j]);
-            }
-            System.out.println();
-        }
-    }
-
-    public static void main(String[] args){
-        // Load in the map
-        String filePath = "test_map.txt";
-        char[][] dungeonMap = loadMap(filePath);
-        // Print the map
-        printMap(dungeonMap);
     }
 }
