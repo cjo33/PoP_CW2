@@ -3,11 +3,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Map {
-    /// This will find the text file
-    /// Then go through each line and add it to an array
-    
+
     // Reads the map file and stores in an array
     public static char[][] loadMap(String filePath) {
         // Stores the rows of the map
@@ -24,7 +23,7 @@ public class Map {
         } 
         // Displays error method if it can't read the map file
         catch (IOException e) {
-            System.out.println("Error when loading the map file" + e.getMessage());
+            System.out.println("Error loading map: " + e.getMessage());
         }
         
         // Convert the array list of rows into a 2D array
@@ -53,14 +52,66 @@ public class Map {
         return goldCoords;
     }
 
+    // This finds the exit coords that is used by the bot 
+    // in working out the closest target
     public static int[] findExitCoords(char[][] dungeonMap) {
+        // Loops through the y and x coords searching for the E tile
         for (int y = 0; y < dungeonMap.length; y++) {
             for (int x = 0; x < dungeonMap[y].length; x++) {
                 if (dungeonMap[y][x] == 'E') {
-                    return new int[] { x, y }; // Return the coordinates of the exit tile
+                    // Returns the coords of the exit tile
+                    return new int[] { x, y };
                 }
             }
         }
-        return null; // Return null if no exit tile is found
+        // Return null if no exit tile is found, this is checked at the start
+        // ensures the player can win the game
+        return null; 
     }
+
+    // This generates a valid random tile that the bot and player can start on
+    public static int[] findRandomTile(char[][] dungeonMap) {
+        // Initialises an array that holds all valid input tiles
+        List<int[]> floorTiles = new ArrayList<>();
+
+        // Iterates through the y an x coords searching for '.' tiles
+        for (int y = 0; y < dungeonMap.length; y++) {
+            for (int x = 0; x < dungeonMap[y].length; x++) {
+                if (dungeonMap[y][x] == '.') {
+                    // Adds the coords of these '.' tiles to the array
+                    floorTiles.add(new int[] { x, y });
+                }
+            }
+        }
+
+        // Checks to ensure that there are valid starting tiles
+        // This should be changed to ensur there are more than 2 valid tiles and then just a more simple error
+        if (floorTiles.isEmpty()) {
+            // throw new IllegalStateException("No valid floor tiles ('.') available on the map!");
+            System.exit(0);
+        }
+
+        // Picks a random tile from the list
+        Random random = new Random();
+        return floorTiles.get(random.nextInt(floorTiles.size()));
+    }
+
+    // This calculates the maximum potential distance between the players
+    public static int maxDistance(char[][] dungeonMap){
+        // calculate the maximum distance betwteen two players could be in the map
+        // -7 because of the walls and the player tiles taking up space
+        int maxDist = dungeonMap[0].length + dungeonMap.length - 7;
+        // Then return relative to this value, the minimum distance apart you want the players start at
+        // Must be divided by more than 1, the closer to 1 the easier the game
+        return (int) Math.round(maxDist/1.5);
+    }
+
+    // Checks the player and the bot are starting far enough apart
+    public static boolean checkDistance(Player player, Bot bot, char[][] dungeonMap){
+        // Calculates the distance between the players
+        int distance = Math.abs(player.getX() - bot.getX()) + Math.abs(player.getY() - bot.getY());
+        // Returns true if the distance bewtween the players is greater than our minimum intial starting distance
+        return distance > maxDistance(dungeonMap);
+    }
+
 }

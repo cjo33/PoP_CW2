@@ -9,6 +9,7 @@ public class Input {
         this.scanner = new Scanner(System.in);
     }
 
+    // This gets the input from the player
     public String getInput() {
         // Prompt the user for an input
         System.out.print("Enter command: ");
@@ -17,6 +18,7 @@ public class Input {
         return scanner.nextLine().toLowerCase().trim();
     }
 
+    // This processes whatever comments the player inputs and calls the relevant function
     public void processCommand(String command, Player player, Game game, char[][] dungeonMap) {
         // Get the current x and y co-ords of the player
         int playerX = player.getX();
@@ -25,7 +27,7 @@ public class Input {
         char nextTile;
         // Goes through the different commands of nswe
         switch (command) {
-            case "north":
+            case "n":
                 // Gets the tile the player would move to
                 nextTile = dungeonMap[playerY - 1][playerX];
                 // Check they can move to that tile
@@ -34,19 +36,19 @@ public class Input {
                     player.moveNorth();
                 }
                 break;
-            case "south":
+            case "s":
                 nextTile = dungeonMap[playerY + 1][playerX];
                 if (player.checkTile(nextTile)) {
                     player.moveSouth();
                 }
                 break;
-            case "west":
+            case "w":
                 nextTile = dungeonMap[playerY][playerX - 1];
                 if (player.checkTile(nextTile)) {
                     player.moveWest();
                 }
                 break;
-            case "east":
+            case "e":
                 nextTile = dungeonMap[playerY][playerX + 1];
                 if (player.checkTile(nextTile)) {
                     player.moveEast();

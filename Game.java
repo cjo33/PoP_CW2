@@ -10,20 +10,51 @@ public class Game {
     private boolean isRunning;
     private int totalGold;
     private int[] exitCoords;
+    private int playerGoldRequired;
+    private int botGoldRequired;
+    private boolean checkDistance;
+    private int[] playerStart;
+    private int[] botStart;
 
-    public Game(char[][] map) {
-        // Initialise the game, define the map and starting point, 
-        // prompt the user for the first input and set the game as running
+    // This starts the game and is called from Main
+    public Game(char[][] map, String difficulty) {
+        // Define the map and set the initial value for checkDistance as false
         this.dungeonMap = map;
-        this.player = new Player(7, 1);
-        this.bot = new Bot(3,3);
+        this.checkDistance = false;
+
+        // Sets a random initial location for the bot and player
+        // then checks they are at least the mimimum distance apart
+        // Continues trying until they checkDistance is updated to true
+        while(checkDistance == false){
+            // Place the player on a random tile
+            playerStart = Map.findRandomTile(dungeonMap);
+            this.player = new Player(playerStart[0], playerStart[1]);
+
+            // Place the bot on a random tile
+            botStart = Map.findRandomTile(dungeonMap);
+            this.bot = new Bot(botStart[0], botStart[1]);
+           
+            // Checks to see if the initial random locations are far enough apart
+            // If yes then checkDistance = True, otherwise it tries another intial spot
+            checkDistance = Map.checkDistance(player, bot, dungeonMap);
+        }
+
+        // Mark player and bot positions on the map
+        dungeonMap[playerStart[1]][playerStart[0]] = 'P';
+        dungeonMap[botStart[1]][botStart[0]] = 'B';
+
+        // Prompt the user for the first input and set the game as running
         this.input = new Input();
         this.isRunning = true;
+        // Calculate the total gold to set the targets for the player and bot
         this.totalGold = calculateTotalGold();
-        this.exitCoords = Map.findExitCoords(dungeonMap);
-        
+        // Set those targets based on the difficulty
+        setGoldRequirements(difficulty);
+        // Check the exit coords exist and update the variable
         if (exitCoords == null) {
-            throw new IllegalStateException("No exit tile ('E') found on the map!");
+            System.out.println("No exit tile ('E') found on the map!");
+            quit();
+        this.exitCoords = Map.findExitCoords(dungeonMap);
         }
     }
 
@@ -32,9 +63,12 @@ public class Game {
         while (isRunning) {
             // Prints the map
             printMap(dungeonMap);
-            playerTurn();
+            // Bot goes first
             botTurn();
+            // Game checks for lose conditionss
             checkGameOver();
+            // Then players turn
+            playerTurn();
         }
     }
 
@@ -51,24 +85,27 @@ public class Game {
         dungeonMap[player.getY()][player.getX()] = 'P';
     }
 
-    public void botTurn() {
-        // Find all gold tiles on the map
+    private void botTurn() {
+        // Check if the bot is on a special tile 
+        // If so perform the action and end the turn
+        if (bot.handleSpecialTile(dungeonMap, totalGold)) {
+            return;
+        }
+    
+        // Find all current gold tiles remaining on the map
         List<int[]> goldCoordinates = Map.findGoldCoords(dungeonMap);
-
-        // Bot determines and moves toward its closest target
-        bot.findClosestTarget(
-            goldCoordinates,
-            player.getX(),
-            player.getY(),
-            dungeonMap,
-            totalGold
-        );
-
+    
+        // Bot works out the closest target and moves
+        bot.findClosestTarget(goldCoordinates, player.getX(), 
+            player.getY(), dungeonMap, totalGold, botGoldRequired);
+    
         // Update the bot's position on the map
         dungeonMap[bot.getY()][bot.getX()] = 'B';
     }
 
+    // Calculate the total gold in the map
     private int calculateTotalGold() {
+        // Make a list of all the gold coordiates and return the size of the list
         List<int[]> goldCoordinates = Map.findGoldCoords(dungeonMap);
         return goldCoordinates.size();
     }
@@ -77,21 +114,21 @@ public class Game {
         // If the bot and player occupy the same tile, the game is over
         if (bot.getX() == player.getX() && bot.getY() == player.getY()) {
             System.out.println("Game Over! The bot caught you!");
-            isRunning = false;
+            quit();
         }
 
         // If the bot has enough gold and reaches the exit, the game ends
-        if (bot.getGoldCount() >= Map.findGoldCoords(dungeonMap).size() / 2 && bot.getCurrentTile() == 'E') {
+        if (bot.getGoldCount() >= botGoldRequired && bot.getCurrentTile() == 'E') {
             System.out.println("Game Over! The bot escaped with enough gold!");
-            isRunning = false;
+            quit();
         }
     }
 
     // This function iterates over the 2D array and prints it to the terminal
     public void printMap(char[][] map) {
-        // iterate through each row
+        // Iterate through each row
         for (int i = 0; i < map.length; i++) {
-            // iterate over each character and print it out
+            //Iiterate over each character and print it out
             for (int j = 0; j < map[i].length; j++) {
                 System.out.print(map[i][j]);
             }
@@ -99,6 +136,27 @@ public class Game {
         }
     }
 
+    // This sets the gold requirements based on whether the game is set to easy or hard
+    private void setGoldRequirements(String difficulty) {
+        switch (difficulty.toLowerCase()) {
+            case "easy":
+                // Bot needs 100% of the gold
+                botGoldRequired = (int) Math.ceil(totalGold * 1.00);
+                // Player only needs 25%
+                playerGoldRequired = (int) Math.ceil(totalGold * 0.25);
+                break;
+            case "hard":
+                // Both require 50% of the gold to exit
+                botGoldRequired = (int) Math.ceil(totalGold * 0.50);
+                playerGoldRequired = (int) Math.ceil(totalGold * 0.50);
+                break;
+            default:
+                // throw new IllegalArgumentException("Invalid difficulty level: " + difficulty);
+                System.out.println("Invalid difficulty level: " + difficulty);
+                quit();
+                // isRunning = false;
+        }
+    }
     // If the game is quit, set boolean isRunning to false and end the while loop in start
     public void quit(){
         isRunning = false;

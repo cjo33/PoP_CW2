@@ -46,16 +46,20 @@ public class Player {
             case '#': 
                 System.out.println("You can't walk into a wall!"); 
                 return false;
-            case '.': 
-            case 'G': 
+            case '.':
+                return true;
+            case 'G':
+                return true;
             case 'E': 
                 return true;
+            // Will return false if the map contains tiles not in initial description
             default: 
                 System.out.println("Unknown tile type: " + tile); 
                 return false;
         }
     }
 
+    // Function to check and pickup gold
     public void pickupGold(char[][] dungeonMap) {
         // Check if the player is on a gold tile
         if (currentTile == 'G') {
