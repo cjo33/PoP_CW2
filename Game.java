@@ -50,19 +50,23 @@ public class Game {
         this.totalGold = calculateTotalGold();
         // Set those targets based on the difficulty
         setGoldRequirements(difficulty);
-        // Check the exit coords exist and update the variable
+        // Check and find the exit coords
+        this.exitCoords = Map.findExitCoords(dungeonMap);
         if (exitCoords == null) {
             System.out.println("No exit tile ('E') found on the map!");
             quit();
-        this.exitCoords = Map.findExitCoords(dungeonMap);
         }
+        player.look();
     }
 
     // This command represents the actions that occur in one turn
     public void start() {
         while (isRunning) {
-            // Prints the map
-            printMap(dungeonMap);
+            // // Prints the map
+            // printMap(dungeonMap);
+            // Print visible area
+            player.updateVisibleArea(dungeonMap);
+            printVisibleArea(player.getVisibleArea());
             // Bot goes first
             botTurn();
             // Game checks for lose conditionss
@@ -131,6 +135,16 @@ public class Game {
             //Iiterate over each character and print it out
             for (int j = 0; j < map[i].length; j++) {
                 System.out.print(map[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    private void printVisibleArea(char[][] visibleArea) {
+        System.out.println("Visible Area:");
+        for (char[] row : visibleArea) {
+            for (char tile : row) {
+                System.out.print(tile);
             }
             System.out.println();
         }

@@ -114,4 +114,29 @@ public class Map {
         return distance > maxDistance(dungeonMap);
     }
 
+    public static char[][] generateView(char[][] dungeonMap, int centerX, int centerY) {
+        int mapHeight = dungeonMap.length;
+        int mapWidth = dungeonMap[0].length;
+        int viewSize = 9;
+        char[][] view = new char[viewSize][viewSize];
+
+        int halfSize = viewSize / 2;
+
+        for (int i = 0; i < viewSize; i++) {
+            for (int j = 0; j < viewSize; j++) {
+                int mapY = centerY - halfSize + i;
+                int mapX = centerX - halfSize + j;
+
+                // Fill with '#' if out of bounds, otherwise take from the dungeon map
+                if (mapY < 0 || mapY >= mapHeight || mapX < 0 || mapX >= mapWidth) {
+                    view[i][j] = '#';
+                } else {
+                    view[i][j] = dungeonMap[mapY][mapX];
+                }
+            }
+        }
+
+        return view;
+    }
+
 }

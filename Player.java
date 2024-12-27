@@ -5,6 +5,9 @@ public class Player {
     private int y;
     private char currentTile;
     private int goldCount;
+    private char[][] visibleArea;
+    private int visCentreX;
+    private int visCentreY;
 
     // Initialises the player with a a starting location and 0 gold count
     public Player(int startX, int startY) {
@@ -39,6 +42,10 @@ public class Player {
         return goldCount;
     }
 
+    // Allows other scripts to retrieve the area visible to the player
+    public char[][] getVisibleArea() {
+        return visibleArea;
+    }
 
     // Check if the player can move onto the next tile
     public boolean checkTile(char tile) {
@@ -72,6 +79,17 @@ public class Player {
             // If there isn't gold, then print negative statement
             System.out.println("There's no gold here to pick up.");
         }
+    }
+
+    // Update the centre of the visible area
+    public void look() {
+        this.visCentreX = x;
+        this.visCentreY = y;
+    }
+
+    // Update the visible area
+    public void updateVisibleArea(char[][] dungeonMap) {
+        this.visibleArea = Map.generateView(dungeonMap, visCentreX, visCentreY);
     }
 
     // Move the player North

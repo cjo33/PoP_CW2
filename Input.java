@@ -3,6 +3,9 @@ import java.util.Scanner;
 public class Input {
     // define our scanner variable that will read the input
     private Scanner scanner;
+    private String[] validCommands = {"n", "e", "s", "w", "pickup", "look", "quit"};
+    private boolean validInput;
+    private String command;
 
     public Input() {
         // Initialises the scanner to read from the system
@@ -18,8 +21,35 @@ public class Input {
         return scanner.nextLine().toLowerCase().trim();
     }
 
+    // Check it is a valid input
+    public boolean checkInput(String command){
+        // Loop through each of the valid commands
+        for (String valid : validCommands){
+            // If any of them match then return true
+            if (valid.equals(command)){
+                return true;
+            }
+        }
+        // Otherwise return false
+        System.out.println("Returns false");
+        return false;
+    }
+
     // This processes whatever comments the player inputs and calls the relevant function
     public void processCommand(String command, Player player, Game game, char[][] dungeonMap) {
+        // Check it is valid
+        validInput = checkInput(command);
+        // If it isnt valid then print the list of valid commands and 
+        // promt the user for another input until it is valid
+        while(!validInput){
+            // Provide the player with the list of valid inputs
+            System.out.println("Invalid command. Please enter one of: " + String.join(", ", validCommands));
+            // Get the input command
+            command = getInput();
+            // Check it is valid
+            validInput = checkInput(command);
+        }
+
         // Get the current x and y co-ords of the player
         int playerX = player.getX();
         int playerY = player.getY();
@@ -57,6 +87,9 @@ public class Input {
             case "pickup":
                 player.pickupGold(dungeonMap);
                 break;
+            case "look":
+                player.look();
+                break;
             case "quit":
                 // If they exit and are on an exit tile then print you win
                 if (player.getCurrentTile() == 'E') {
@@ -67,6 +100,7 @@ public class Input {
                     game.quit();
                 }
                 break;
+            // Ideally it prompts the user for a different command if its false
             default:
                 System.out.println("Invalid command. Please try again.");
                 break;
