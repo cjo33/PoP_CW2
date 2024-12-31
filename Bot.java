@@ -96,17 +96,6 @@ public class Bot {
                     goldCoordinates.add(new int[] {globalX, globalY});
                     System.out.println("Gold Coords: " + goldCoordinates);
                 }
-
-                // if (tile == 'E') {
-                //     exitCoords = new int[] {i, j};
-                //     System.out.println("Exit Coords: " + Arrays.toString(exitCoords));
-                // } else if (tile == 'P') {
-                //     playerCoords = new int[] {i, j};
-                //     System.out.println("Player Coords: " + Arrays.toString(playerCoords));
-                // } else if (tile == 'G') {
-                //     goldCoordinates.add(new int[] {i, j});
-                //     System.out.println("Gold Coords: " + goldCoordinates);
-                // }
             }
         }
     }
@@ -150,30 +139,6 @@ public class Bot {
 
     //////////////////////////////////////////////////////////////////////// Close target ////////////////////////////////////////////////////////////////////////
 
-    // // This works out how far the bot is from the player
-    // public int getPlayerDistance(int playerX, int playerY) {
-    //     return Math.abs(playerX - x) + Math.abs(playerY - y);
-    // }
-
-    // // This goes through the array of current gold on the map an finds the one closest to the bot
-    // public int[] findClosestGold(List<int[]> goldCoordinates) {
-    //     // Initialise values, set shortest distance to large number so that there is always
-    //     // a gold that is closer to the bot and it doesn't break
-    //     int[] closestGold = null;
-    //     int shortestDistance = 9999999;
-    //     // Goes through each remaining gold on the map
-    //     for (int[] gold : goldCoordinates) {
-    //         // Calculate the distance between the bot and the gold
-    //         int distance = Math.abs(gold[0] - x) + Math.abs(gold[1] - y);
-    //         // If that is the closest gold so far then update the shortest distance and closest gold
-    //         if (distance < shortestDistance) {
-    //             closestGold = gold;
-    //             shortestDistance = distance;
-    //         }
-    //     }
-    //     // Return the closest gold to the bot
-    //     return closestGold;
-    // }
 
     private int[] findClosestTarget(List<int[]> goldCoordinates, int[] playerCoords) {
         // Initialise values, set shortest distance to large number so that there is always
@@ -207,71 +172,6 @@ public class Bot {
         return closestTarget;
     }
 
-    /// Ok so first we need to see what tiles are visible
-    /// If they have enough gold
-        /// If there is an exit tile then move to the exit
-        /// Else if there is a player then go towards the player
-        /// Otherwise call the random/nothing function
-    /// If they don't have enough gold
-        /// If there are targets (P or G), go to the closest one
-        /// If there aren't then call the random/nothing function
-
-
-
-    // This function is needed only if we make the bot decide bewtween going towards the player or the bot
-    // // This function returns the distance from the bot to the exit tile
-    // public int getExitDistance(char[][] dungeonMap) {
-    //     int[] exitCoordinates = Map.findExitCoords(dungeonMap);
-    //     return Math.abs(exitCoordinates[0] - x) + Math.abs(exitCoordinates[1] - y);
-    // }
-
-    // // This function determines where the bot is moving towards
-    // public void findClosestTarget(List<int[]> goldCoordinates, int playerX, int playerY, char[][] dungeonMap, int totalGold, int botGoldRequired) {
-    //     // Get the exit coords (already checked in game that they exist)
-    //     int[] exitCoordinates = Map.findExitCoords(dungeonMap);
-
-    //     // If the bot has enough gold, go towards the player (more difficult)
-    //     if (goldCount >= botGoldRequired) {
-    //         moveTowards(exitCoordinates[0], exitCoordinates[1], dungeonMap);
-
-    //         // Code to make the bot decide between going towards the player or the exit
-    //         // This should decrease the difficulty
-    //         // // If the bot has enough gold, prioritize the exit or player
-    //         // int exitDistance = getExitDistance(dungeonMap);
-    //         // int playerDistance = getPlayerDistance(playerX, playerY);
-    //         // if (exitDistance <= playerDistance) {
-    //         //     moveTowards(exitCoordinates[0], exitCoordinates[1], dungeonMap); // Move toward the exit
-    //         // } else {
-    //         //     moveTowards(playerX, playerY, dungeonMap); // Move toward the player
-    //         // }
-        
-    //     // If the bot doesn't have enough gold to exit, then it goes towards either the player or the gold based on which is closer
-    //     } else {
-    //         // Prioritize the closest gold or player
-    //         int[] closestGold = findClosestGold(goldCoordinates);
-
-    //         // If there is still gold on the map
-    //         if (closestGold != null) {
-    //             // Calculate distance to the nearest gold
-    //             int goldDistance = Math.abs(closestGold[0] - x) + Math.abs(closestGold[1] - y);
-    //             // Calculate distance to the player
-    //             int playerDistance = getPlayerDistance(playerX, playerY);
-
-    //             // If gold is closer, go towards the gold
-    //             if (goldDistance <= playerDistance) {
-    //                 moveTowards(closestGold[0], closestGold[1], dungeonMap);
-    //             } 
-    //             // If player is closer, go towards the player
-    //             else {
-    //                 moveTowards(playerX, playerY, dungeonMap);
-    //             }
-    //         // No gold left, move toward the player
-    //         } else {
-    //             moveTowards(playerX, playerY, dungeonMap);
-    //         }
-    //     }
-    // }
-
 
     //////////////////////////////////////////////////////////////////////// No target ////////////////////////////////////////////////////////////////////////
 
@@ -288,15 +188,6 @@ public class Bot {
     private boolean isOnEdgeOfVision() {
         return x == visCentreX - halfSize || x == visCentreX + halfSize || y == visCentreY - halfSize || y == visCentreY + halfSize;
     }
-
-
-
-
-    /// So we need to find where the closest edge is that isn't a wall
-    /// Find all the edges
-    /// Check if they are a wall, if so remove them as an option
-    /// THen work out which are closest and go towards them
-
 
     private List<int[]> findEdgeCoordinates() {
         List<int[]> edges = new ArrayList<>();
@@ -363,45 +254,6 @@ public class Bot {
     }
     
     
-
-    // private void moveToNearestEdge(char[][] dungeonMap) {
-    // int closestEdgeX = x < visCentreX ? visCentreX - halfSize : visCentreX + halfSize;
-    // int closestEdgeY = y < visCentreY ? visCentreY - halfSize : visCentreY + halfSize;
-    // System.out.println(closestEdgeX);
-    // System.out.println(closestEdgeY);
-
-    // if (checkTile(closestEdgeX, closestEdgeY, visibleArea)) {
-    //     moveTowards(closestEdgeX, closestEdgeY, visibleArea);
-    //     System.out.println("Moving to closest edge:");
-
-    // } else {
-    //     wander(dungeonMap);
-    //     System.out.println("I'm wandering:");
-    // }
-    // }
-
-    // private void wander(char[][] dungeonMap) {
-    //     Random random = new Random();
-    //     int direction = random.nextInt(4);
-    //     int newX = x;
-    //     int newY = y;
-
-    //     switch (direction) {
-    //         case 0 -> newX = x + 1; // Move right
-    //         case 1 -> newX = x - 1; // Move left
-    //         case 2 -> newY = y + 1; // Move down
-    //         case 3 -> newY = y - 1; // Move up
-    //     }
-
-    //     if (checkTile(newX, newY, dungeonMap)) {
-    //         // dungeonMap[y][x] = currentTile;
-    //         x = newX;
-    //         y = newY;
-    //         // currentTile = dungeonMap[y][x];
-    //         // dungeonMap[y][x] = 'B';
-    //     }
-    // }
-
     //////////////////////////////////////////////////////////////////////// Do something, old code ////////////////////////////////////////////////////////////////////////
 
     // Checks to ensure that the new potential position of the bot is within the bounds of the map
