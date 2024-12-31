@@ -57,6 +57,7 @@ public class Game {
             quit();
         }
         player.look();
+        bot.look();
     }
 
     // This command represents the actions that occur in one turn
@@ -67,6 +68,10 @@ public class Game {
             // Print visible area
             player.updateVisibleArea(dungeonMap);
             printVisibleArea(player.getVisibleArea());
+            
+            System.out.println("This is the map for the bot:");
+            bot.updateVisibleArea(dungeonMap);
+            printVisibleArea(bot.getVisibleArea());
             // Bot goes first
             botTurn();
             // Game checks for lose conditionss
@@ -93,16 +98,13 @@ public class Game {
         // Check if the bot is on a special tile 
         // If so perform the action and end the turn
         if (bot.handleSpecialTile(dungeonMap, totalGold)) {
-            return;
-        }
-    
-        // Find all current gold tiles remaining on the map
-        List<int[]> goldCoordinates = Map.findGoldCoords(dungeonMap);
-    
-        // Bot works out the closest target and moves
-        bot.findClosestTarget(goldCoordinates, player.getX(), 
-            player.getY(), dungeonMap, totalGold, botGoldRequired);
-    
+            return;}
+        // reset the tile where the player was back to what it was
+        dungeonMap[bot.getY()][bot.getX()] = bot.getCurrentTile();
+        // Bot decides its next move based on the visible area and current priorities
+        bot.makeMove(dungeonMap, botGoldRequired);
+        // Gets the information of the new tile the player will go onto
+        bot.setCurrentTile(dungeonMap[bot.getY()][bot.getX()]);
         // Update the bot's position on the map
         dungeonMap[bot.getY()][bot.getX()] = 'B';
     }

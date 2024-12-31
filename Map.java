@@ -7,6 +7,14 @@ import java.util.Random;
 
 public class Map {
 
+    private static int viewSize = 5;
+
+    
+    // Allows other scripts to get the viewSize
+    public static int getViewSize() {
+        return viewSize;
+    }
+
     // Reads the map file and stores in an array
     public static char[][] loadMap(String filePath) {
         // Stores the rows of the map
@@ -117,7 +125,6 @@ public class Map {
     public static char[][] generateView(char[][] dungeonMap, int centerX, int centerY) {
         int mapHeight = dungeonMap.length;
         int mapWidth = dungeonMap[0].length;
-        int viewSize = 9;
         char[][] view = new char[viewSize][viewSize];
 
         int halfSize = viewSize / 2;
