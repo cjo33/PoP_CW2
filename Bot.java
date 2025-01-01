@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -82,19 +81,19 @@ public class Bot {
         // Loop through each character
         for (int i = 0; i < visibleArea.length; i++) {
             for (int j = 0; j < visibleArea[i].length; j++) {
+                // Find the tile at that location
                 char tile = visibleArea[i][j];
+                // Then work out it's global location
+                // (As opposed to it's relative location on the visual area)
                 int globalX = visCentreX - halfSize + j;
                 int globalY = visCentreY - halfSize + i;
-
+                // Go through checking for the different special tiles
                 if (tile == 'E') {
                     exitCoords = new int[] {globalX, globalY};
-                    System.out.println("Exit Coords: " + Arrays.toString(exitCoords));
                 } else if (tile == 'P') {
                     playerCoords = new int[] {globalX, globalY};
-                    System.out.println("Player Coords: " + Arrays.toString(playerCoords));
                 } else if (tile == 'G') {
                     goldCoordinates.add(new int[] {globalX, globalY});
-                    System.out.println("Gold Coords: " + goldCoordinates);
                 }
             }
         }
@@ -110,15 +109,12 @@ public class Bot {
             // If it can see the exit, then move straight to that
             if (exitCoords != null) {
                 moveTowards(exitCoords[0], exitCoords[1], dungeonMap);
-                System.out.println("Ugg I go to exit with gold");
             // If it can't see the exit but can see the player, move to the player
             } else if (playerCoords != null) {
                 moveTowards(playerCoords[0], playerCoords[1], dungeonMap);
-                System.out.println("Ugg I go to player with gold");
             // Otherwise just go towards the closest boundary
             } else {
                 noTargets(dungeonMap);
-                System.out.println("Ugg I have no target but enough gold");
             }
         // If the bot doesn't have enough gold
         } else {
@@ -126,19 +122,12 @@ public class Bot {
             if (playerCoords != null || !goldCoordinates.isEmpty()) {
                 int[] closestTarget = findClosestTarget(goldCoordinates, playerCoords);
                 moveTowards(closestTarget[0], closestTarget[1], dungeonMap);
-                System.out.println("Closest target: " + closestTarget[0]);
-                System.out.println("Closest target: " + closestTarget[1]);
-                System.out.println("Ugg I go to closest target");
             // Otherwise just go towards the closest boundary
             } else {
                 noTargets(dungeonMap);
-                System.out.println("Ugg I have no target and no gold");
             }
         }
     }
-
-    //////////////////////////////////////////////////////////////////////// Close target ////////////////////////////////////////////////////////////////////////
-
 
     private int[] findClosestTarget(List<int[]> goldCoordinates, int[] playerCoords) {
         // Initialise values, set shortest distance to large number so that there is always
@@ -171,24 +160,25 @@ public class Bot {
         // Return the coordinates of the closest target
         return closestTarget;
     }
-
-
-    //////////////////////////////////////////////////////////////////////// No target ////////////////////////////////////////////////////////////////////////
-
     
     private void noTargets(char[][] dungeonMap) {
+        // First checks to see if the bot is at the edge of it's vision
         if (isOnEdgeOfVision()) {
-            look(); // Update vision
+            // If so then it should look to update its vision
+            look();
             System.out.println("The bot is looking around");
         } else {
-            moveToNearestEdge(dungeonMap);
+            // Otherwise it should move toward an edge
+            findAnEdge(dungeonMap);
         }
     }
 
+    // This function checks if the bot is on the edge of it's vision
     private boolean isOnEdgeOfVision() {
         return x == visCentreX - halfSize || x == visCentreX + halfSize || y == visCentreY - halfSize || y == visCentreY + halfSize;
     }
 
+    // This function finds the coordinates of all the closest edge tiles to the bot (only change one axis)
     private List<int[]> findEdgeCoordinates() {
         List<int[]> edges = new ArrayList<>();
 
@@ -201,8 +191,10 @@ public class Bot {
         return edges;
     }
 
+    // This function goes through each of the edges and removes those that are walls
     private List<int[]> filterValidEdges(List<int[]> edges, char[][]dungeonMap) {
         List<int[]> validEdges = new ArrayList<>();
+        // For each edge, check if it is a wall, if it isn't then add it to the list of valid edges the bot can go to
         for (int[] edge : edges) {
             if (checkTile(edge[0], edge[1], dungeonMap)) {
                 validEdges.add(edge);
@@ -226,27 +218,28 @@ public class Bot {
     //     return closestEdge;
     // }
 
+    // This function selects a random edge for the bot to walk towards
+    // Not using the closest edge function as it could get stuck in a loop of moving away from a wall and back
     private int[] selectRandomEdge(List<int[]> validEdges) {
+        // Check to ensure there are valid edges
         if (validEdges.isEmpty()) {
-            return null; // No valid edges
+            return null;
         }
+        // Return a random edge
         Random random = new Random();
         return validEdges.get(random.nextInt(validEdges.size()));
     }
 
-    private void moveToNearestEdge(char[][] dungeonMap) {
-        // Step 1: Find all edges
+    // This function calls the helper functions to instruct the bot on how to reach an edge and look for more targets
+    private void findAnEdge(char[][] dungeonMap) {
+        // First locate all the edge coordinates
         List<int[]> edges = findEdgeCoordinates();
-    
-        // Step 2: Filter out walls
+        // Remove all the invalid edges
         List<int[]> validEdges = filterValidEdges(edges, dungeonMap);
-    
-        // Step 3: Randomly select a valid edge
+        // Select a random edge to walk towards
         int[] randomEdge = selectRandomEdge(validEdges);
-    
-        // Step 4: Move toward the randomly selected valid edge
+        // Check there is an edge target and then move
         if (randomEdge != null) {
-            System.out.println("Moving to random edge: " + Arrays.toString(randomEdge));
             moveTowards(randomEdge[0], randomEdge[1], dungeonMap);
         } else {
             System.out.println("No valid edges found, staying put.");
@@ -254,11 +247,9 @@ public class Bot {
     }
     
     
-    //////////////////////////////////////////////////////////////////////// Do something, old code ////////////////////////////////////////////////////////////////////////
-
     // Checks to ensure that the new potential position of the bot is within the bounds of the map
     private boolean checkTile(int newX, int newY, char[][] dungeonMap) {
-        if (newX < 0 || newY < 0 || newY > dungeonMap.length || newX > dungeonMap[0].length){
+        if (newX < 0 || newY < 0 || newY >= dungeonMap.length || newX >= dungeonMap[0].length){
             return false;
         }
         return dungeonMap[newY][newX] != '#';
@@ -293,10 +284,6 @@ public class Bot {
     public void moveTowards(int targetX, int targetY, char[][] dungeonMap) {
         int newX = x;
         int newY = y;
-        System.out.println("X:" + x);
-        System.out.println("Y:" + y);
-        System.out.println("Target X:" + targetX);
-        System.out.println("Target Y:" + targetY);
         // Move right
         if (targetX > x) {
             newX = x + 1;
@@ -316,14 +303,9 @@ public class Bot {
 
         // Check if the move is valid then update the map
         if (checkTile(newX, newY, dungeonMap)) {
-            // Update the map with the old value of that tile
-            // dungeonMap[y][x] = currentTile;
-            // define our x and y values and update the current tile
+            // define our new x and y values
             x = newX;
             y = newY;
-            // currentTile = dungeonMap[y][x];
-            // // Place the bot in the new position
-            // dungeonMap[y][x] = 'B';
         }
     }
 }

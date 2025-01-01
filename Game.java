@@ -56,6 +56,7 @@ public class Game {
             System.out.println("No exit tile ('E') found on the map!");
             quit();
         }
+        // Initialise the view points for the player and bot
         player.look();
         bot.look();
     }
@@ -130,21 +131,23 @@ public class Game {
         }
     }
 
-    // This function iterates over the 2D array and prints it to the terminal
-    public void printMap(char[][] map) {
-        // Iterate through each row
-        for (int i = 0; i < map.length; i++) {
-            //Iiterate over each character and print it out
-            for (int j = 0; j < map[i].length; j++) {
-                System.out.print(map[i][j]);
-            }
-            System.out.println();
-        }
-    }
+    // // This function iterates over the 2D array and prints it to the terminal
+    // public void printMap(char[][] map) {
+    //     // Iterate through each row
+    //     for (int i = 0; i < map.length; i++) {
+    //         //Iiterate over each character and print it out
+    //         for (int j = 0; j < map[i].length; j++) {
+    //             System.out.print(map[i][j]);
+    //         }
+    //         System.out.println();
+    //     }
+    // }
 
+    // This function takes the visible area created and prints it by iterating through the character array
     private void printVisibleArea(char[][] visibleArea) {
-        System.out.println("Visible Area:");
+        // Iterate through each row        
         for (char[] row : visibleArea) {
+            // Iterate over each character and print it out
             for (char tile : row) {
                 System.out.print(tile);
             }

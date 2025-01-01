@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Map {
 
-    private static int viewSize = 5;
+    private static int viewSize = 3;
 
     
     // Allows other scripts to get the viewSize
@@ -122,27 +122,33 @@ public class Map {
         return distance > maxDistance(dungeonMap);
     }
 
-    public static char[][] generateView(char[][] dungeonMap, int centerX, int centerY) {
+    // This function takes two centre coordiates and generates the visual map around them
+    public static char[][] generateView(char[][] dungeonMap, int centreX, int centreY) {
+        // Calculate the height and width to determine what would be out of view and should be filled in with walls
         int mapHeight = dungeonMap.length;
         int mapWidth = dungeonMap[0].length;
+        // Initialise the character array for storing the new visual area
         char[][] view = new char[viewSize][viewSize];
 
+        // Calculate how many tiles to the edge from the centre
         int halfSize = viewSize / 2;
 
+        // Iterate through to find all the tiles
         for (int i = 0; i < viewSize; i++) {
             for (int j = 0; j < viewSize; j++) {
-                int mapY = centerY - halfSize + i;
-                int mapX = centerX - halfSize + j;
+                // Find the global values from the dungeon map that will correspond to the relative tile values
+                int GlobalY = centreY - halfSize + i;
+                int GlobalX = centreX - halfSize + j;
 
-                // Fill with '#' if out of bounds, otherwise take from the dungeon map
-                if (mapY < 0 || mapY >= mapHeight || mapX < 0 || mapX >= mapWidth) {
+                // If the global value is outside of the bounds of the map, then fill it with a wall
+                if (GlobalY < 0 || GlobalY >= mapHeight || GlobalX < 0 || GlobalX >= mapWidth) {
                     view[i][j] = '#';
+                // Otherwise get the tile from the global dungeon map
                 } else {
-                    view[i][j] = dungeonMap[mapY][mapX];
+                    view[i][j] = dungeonMap[GlobalY][GlobalX];
                 }
             }
         }
-
         return view;
     }
 
