@@ -129,6 +129,7 @@ public class Bot {
         }
     }
 
+    // This function determines the coordinate of the closest target to the bot
     private int[] findClosestTarget(List<int[]> goldCoordinates, int[] playerCoords) {
         // Initialise values, set shortest distance to large number so that there is always
         // a gold that is closer to the bot and it doesn't break
@@ -161,6 +162,7 @@ public class Bot {
         return closestTarget;
     }
     
+    // This function tells the bot what to do when there no targets
     private void noTargets(char[][] dungeonMap) {
         // First checks to see if the bot is at the edge of it's vision
         if (isOnEdgeOfVision()) {
@@ -204,6 +206,7 @@ public class Bot {
         return validEdges;
     }
 
+    // // This function finds the coordinates of the closest edge to the bot such that it can efficiently update its visible area as fast as possible
     // private int[] findClosestEdge(List<int[]> validEdges) {
     //     int[] closestEdge = null;
     //     int shortestDistance = Integer.MAX_VALUE;
@@ -273,8 +276,7 @@ public class Bot {
         return false;
     }
 
-    // This function gives commands to the bot as to where to go, 
-    // based on the coordinates of the target and the map with some randomness
+    // This function gives commands to the bot as to where to go, based on the coordinates of the target and the map with some randomness
     public void moveTowards(int targetX, int targetY, char[][] dungeonMap) {
         int newX = x;
         int newY = y;

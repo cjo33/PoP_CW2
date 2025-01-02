@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Scanner;
 
 public class Input {
@@ -7,11 +8,69 @@ public class Input {
     private boolean validInput;
     private String command;
     private int viewSize;
+    private String filePath;
 
     public Input() {
         // Initialises the scanner to read from the system
         this.scanner = new Scanner(System.in);
+        // Sets the view size from the Map class
         this.viewSize = Map.getViewSize();
+    }
+
+    // Function to list available maps and let the player choose one then set the file path
+    public String chooseMap() {
+        // Creates a file object which equals the folder Maps, this contains all of the potential maps the user can play
+        File folder = new File("Maps");
+        // Create a list of all the files from the maps folder which end in .txt
+        File[] mapFiles = folder.listFiles((dir, name) -> name.endsWith(".txt"));
+        // Check to ensure there are maps in the folder
+        if (mapFiles == null || mapFiles.length == 0) {
+            System.out.println("No txt files found in the " + folder + " folder.");
+            return null;
+        }
+
+        // Prompt the user for a choice of map
+        System.out.println("Select a map: ");
+        // Iterate through the list of maps and print them to let the user choose from
+        // (add one for asthetics, make it more intuitive for the user to start from 1 rather than 0)
+        for (int i = 0; i < mapFiles.length; i++) {
+            System.out.println((i + 1) + ". " + mapFiles[i].getName());
+        }
+
+        // Initialise choice as an invalid option
+        int choice = -1;
+        // While the user hasn't entered a valid number
+        while (choice < 1 || choice > mapFiles.length) {
+            System.out.print("Enter the number of your choice: ");
+            // If the input is an integer
+            if (scanner.hasNextInt()) {
+                // Set the integer equal to choice, if it is a valid number (between 1 and the number of maps)
+                // Then break the while loop, otherwise prompt for a number again
+                choice = scanner.nextInt();
+            } else {
+                // If not a valid integer, skip that selection and start again
+                scanner.next();
+            }
+        }
+
+        // Set the file name of the map from the list that matches that choice value (-1 as we started at 1)
+        String mapName = mapFiles[choice - 1].getName();
+        // Return the full relative file path
+        return "Maps/" + mapName;
+    }
+
+    // Function to let the player choose a difficulty level
+    public String setDifficulty() {
+        // Display the difficuly options
+        System.out.println("Choose a difficulty level: easy, normal or hard");
+        String difficulty = "";
+        
+        // While difficulty is not one of the valid options (easy, normal, hard), prompt the user to input a difficulty level
+        while (!difficulty.equals("easy") && !difficulty.equals("normal") && !difficulty.equals("hard")) {
+            System.out.print("Enter your choice: ");
+            difficulty = scanner.nextLine().toLowerCase().trim();
+        }
+        return difficulty;
     }
 
     // This gets the input from the player
@@ -140,6 +199,7 @@ public class Input {
         // Ideally it prompts the user for a different command if its false
     }
 
+    // This function displays the information the player might need if they are stuck and call the help function
     private void help() {
         System.out.println("Game objective:");
         System.out.println("    Move round the map and pickup enough gold to exit the dungeon.");

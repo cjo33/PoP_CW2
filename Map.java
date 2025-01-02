@@ -7,7 +7,8 @@ import java.util.Random;
 
 public class Map {
 
-    private static int viewSize = 9;
+    // Define the view size for the bot and the player (specification says 5 but certain maps could do with bigger)
+    private static int viewSize = 5;
     private static String mapName;
     private static int winCondition;
 

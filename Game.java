@@ -38,8 +38,9 @@ public class Game {
         // Only print if no errors have been displayed (makes it more obvious why it broke)
         if(isRunning && !shouldQuit){
             // Display the welcome message
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             System.out.println("Welcome to Dungeon's of Doom!");
-            System.out.println("You are playing in the: " + Map.getMapName());
+            System.out.println("You are playing on the " + Map.getMapName() + "map.");
             System.out.println("You are playing on " + difficulty + " mode.");
             System.out.println("The objective of the game is to move around the map, pickup enough gold and exit the dungeon.");
             System.out.println("Beware! There is a dangerous bot who is lurking, trying to catch you or pick up the gold for themselves.");
@@ -83,16 +84,16 @@ public class Game {
     // This command represents the actions that occur in one turn
     public void start() {
         while (isRunning && !shouldQuit) {
-            // Prints the map for testing
-            printWholeMap(dungeonMap);
+            // // Prints the map for testing
+            // printWholeMap(dungeonMap);
 
             // Update and print visible area
             player.updateVisibleArea(dungeonMap);
-            // printVisibleArea(player.getVisibleArea());
+            printVisibleArea(player.getVisibleArea());
             
             // Update the bot's view
             bot.updateVisibleArea(dungeonMap);
-            // // Prints the bot's view for testing
+            // // Print the bot's visible area for testing
             // printVisibleArea(bot.getVisibleArea());
 
             // Bot goes first
@@ -104,6 +105,7 @@ public class Game {
         }
     }
 
+    // This function determines what happens on the player's turn
     public void playerTurn() {
         // reset the tile where the player was back to what it was
         dungeonMap[player.getY()][player.getX()] = player.getCurrentTile();
@@ -117,6 +119,7 @@ public class Game {
         dungeonMap[player.getY()][player.getX()] = 'P';
     }
 
+    // This function determines what happens on the bot's turn
     private void botTurn() {
         // Check if the bot is on a special tile 
         // If so perform the action and end the turn
@@ -139,16 +142,21 @@ public class Game {
         return goldCoordinates.size();
     }
 
+    // This function checks to see if any of the lose conditions are met
     private void checkGameOver() {
         // If the bot and player occupy the same tile, the game is over
         if (bot.getX() == player.getX() && bot.getY() == player.getY()) {
             System.out.println("Game Over! The bot caught you!");
             quit();
         }
-
         // If the bot has enough gold and reaches the exit, the game ends
         if (bot.getGoldCount() >= botGoldRequired && bot.getCurrentTile() == 'E') {
             System.out.println("Lose! The bot has left the dungeon with enough gold!");
+            quit();
+        }
+        // If the gold that hasn't been pickup yet isn't enough with the player's current gold total to win the game, then exit
+        if (totalGold - bot.getGoldCount() < playerGoldRequired - player.getGoldCount()) {
+            System.out.println("Lose! The bot has picked up too much gold and thre isn't enough remaining in the dungeon to win!");
             quit();
         }
     }
@@ -221,14 +229,17 @@ public class Game {
         isRunning = false;
     }
 
+    // Displays the amount of gold the player needs to win when they input the hello command
     public void hello(){
         System.out.println("Gold to win: " + playerGoldRequired);
     }
-
+    
+    // This function allows other classes to access the player's gold required
     public int getPlayerGoldReq() {
         return playerGoldRequired;
     }
 
+    // This function allows other classes to access the bot's gold required
     public int getBotGoldReq() {
         return botGoldRequired;
     }

@@ -59,7 +59,7 @@ public class Player {
                 return true;
             case 'E': 
                 return true;
-            // Will return false if the map contains tiles not in initial description
+            // Will return false if the map contains tiles not in initial description (just a precaution)
             default: 
                 System.out.println("Unknown tile type: " + tile); 
                 return false;
@@ -114,6 +114,7 @@ public class Player {
         x += 1;
     }
 
+    // Displays the amount of gold the player has when they input the gold command
     public void gold(){
         System.out.println("Gold owned: " + goldCount);
     }

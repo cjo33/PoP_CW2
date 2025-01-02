@@ -1,4 +1,4 @@
-name Example DoD Map
+name Example DoD
 win 3
 ####################
 #...............E..#
