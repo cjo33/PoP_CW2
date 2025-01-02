@@ -166,7 +166,8 @@ public class Bot {
         if (isOnEdgeOfVision()) {
             // If so then it should look to update its vision
             look();
-            System.out.println("The bot is looking around");
+            // // Print for testing
+            // System.out.println("The bot is looking around");
         } else {
             // Otherwise it should move toward an edge
             findAnEdge(dungeonMap);
@@ -242,7 +243,7 @@ public class Bot {
         if (randomEdge != null) {
             moveTowards(randomEdge[0], randomEdge[1], dungeonMap);
         } else {
-            System.out.println("No valid edges found, staying put.");
+            System.out.println("No valid directions for the Bot.");
         }
     }
     
@@ -256,7 +257,7 @@ public class Bot {
     }
 
     // Instructions for the bot if they are on a G or E tile
-    public boolean handleSpecialTile(char[][] dungeonMap, int totalGold) {
+    public boolean handleGoldTile(char[][] dungeonMap, Game game) {
         // If they are on a gold tile
         if (currentTile == 'G') {
             System.out.println("The bot is picking up gold!");
@@ -267,46 +268,64 @@ public class Bot {
             dungeonMap[y][x] = 'B';
             // If they are on a gold tile, return true to take a up a turn
             return true;
-        // If they are on an E tile and they have enough money
-        } else if (currentTile == 'E' && goldCount >= totalGold / 2) {
-            System.out.println("The bot has exited the dungeon with enough gold!");
-            // Then end the game
-            System.exit(0);
-            // Likewise return true to indicate it takes up a turn
-            return true;
-        }
-
+        } 
         // Otherwise return false to tell the bot to move to a new tile
         return false;
     }
 
-    // This function gives commands to the bot as to where to go, based on the coordinates of the target and the map
+    // This function gives commands to the bot as to where to go, 
+    // based on the coordinates of the target and the map with some randomness
     public void moveTowards(int targetX, int targetY, char[][] dungeonMap) {
         int newX = x;
         int newY = y;
-        // Move right
-        if (targetX > x) {
-            newX = x + 1;
-        } 
-        // Move left
-        else if (targetX < x) {
-            newX = x - 1; 
-        } 
-        // Move down
-        else if (targetY > y) {
-            newY = y + 1;
-        } 
-        // Move up
-        else if (targetY < y) {
-            newY = y - 1;
+
+        // Randomly decide whether to prioritise X or Y axis
+        // (Which comes first in the if statement)
+        // This prevents it from getting stuck behind a wall when it is trying to get to a target
+        Random random = new Random();
+        boolean priority = random.nextBoolean();
+
+        if (priority) {
+            // Prioritise X-axis
+            if (targetX > x) {
+                newX = x + 1; // Move right
+            } else if (targetX < x) {
+                newX = x - 1; // Move left
+            } else if (targetY > y) {
+                newY = y + 1; // Move down
+            } else if (targetY < y) {
+                newY = y - 1; // Move up
+            }
+        } else {
+            // Prioritise Y-axis
+            if (targetY > y) {
+                newY = y + 1; // Move down
+            } else if (targetY < y) {
+                newY = y - 1; // Move up
+            } else if (targetX > x) {
+                newX = x + 1; // Move right
+            } else if (targetX < x) {
+                newX = x - 1; // Move left
+            }
         }
 
-        // Check if the move is valid then update the map
-        if (checkTile(newX, newY, dungeonMap)) {
-            // define our new x and y values
-            x = newX;
-            y = newY;
+        // First check if that move is valid, if so perform the move
+        // If not then choose random directions until you find a move that is valid
+        while (!checkTile(newX, newY, dungeonMap)) {
+
+            // Choose a random direction from the 4 cases
+            int direction = random.nextInt(4);
+            switch (direction) {
+                case 0 -> { newX = x + 1; newY = y; } // Right
+                case 1 -> { newX = x - 1; newY = y; } // Left
+                case 2 -> { newX = x; newY = y + 1; } // Down
+                case 3 -> { newX = x; newY = y - 1; } // Up
+            }
         }
+
+        // Define our new x and y values
+        x = newX;
+        y = newY;
     }
 }
 

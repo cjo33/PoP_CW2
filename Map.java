@@ -7,12 +7,46 @@ import java.util.Random;
 
 public class Map {
 
-    private static int viewSize = 3;
+    private static int viewSize = 9;
+    private static String mapName;
+    private static int winCondition;
 
-    
     // Allows other scripts to get the viewSize
     public static int getViewSize() {
         return viewSize;
+    }
+
+    // Allows other scripts to get the map name
+    public static String getMapName() {
+        return mapName;
+    }
+
+    // Allows other scripts to get the win condition
+    public static int getWinCondition() {
+        return winCondition;
+    }
+
+    // Reads the metadata from the map file (name and win condition)
+    public static void readMetadata(String filePath) {
+        // Attempt to read the first two lines
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            // Split the first line into two based on the first space
+            // name Example DoD Map becomes ["name", "Example DoD Map"]
+            // Then take the second entry "Example DoD Map" from this
+            mapName = br.readLine().split(" ", 2)[1];
+            // Same logic as the name, win 3 becomes ["win", "3"]
+            // Then take the second entry "3" and convert to integer
+            winCondition = Integer.parseInt(br.readLine().split(" ", 2)[1]);
+        } 
+        // If there is an error, tell the player which error it is and 
+        catch (IOException e) {
+            System.out.println("Error reading map name: " + e.getMessage());
+            Game.shouldQuit = true;
+        } 
+        catch (NumberFormatException e) {
+            System.out.println("Error parsing win condition: " + e.getMessage());
+            Game.shouldQuit = true;
+        }
     }
 
     // Reads the map file and stores in an array
@@ -22,6 +56,10 @@ public class Map {
         
         // Attempts to read the map file
         try(BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            // Skip the first two lines (already read in metadata func)
+            br.readLine();
+            br.readLine();
+
             String line;
             // Iterates through br to add each character to the array
             while ((line = br.readLine()) != null){
@@ -111,7 +149,7 @@ public class Map {
         int maxDist = dungeonMap[0].length + dungeonMap.length - 7;
         // Then return relative to this value, the minimum distance apart you want the players start at
         // Must be divided by more than 1, the closer to 1 the easier the game
-        return (int) Math.round(maxDist/1.5);
+        return (int) Math.round(maxDist/3);
     }
 
     // Checks the player and the bot are starting far enough apart

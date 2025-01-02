@@ -51,7 +51,7 @@ public class Player {
     public boolean checkTile(char tile) {
         switch (tile) {
             case '#': 
-                System.out.println("You can't walk into a wall!"); 
+                System.out.println("Fail: You can't walk into a wall!"); 
                 return false;
             case '.':
                 return true;
@@ -70,14 +70,16 @@ public class Player {
     public void pickupGold(char[][] dungeonMap) {
         // Check if the player is on a gold tile
         if (currentTile == 'G') {
-            // If they are then print positive statement and add 1 to the count
-            System.out.println("You picked up the gold!");
+            // If they are then add 1 to the count
             goldCount += 1;
+            // Print positive statement and the gold count
+            System.out.println("Success! You picked up the gold!");
+            System.out.println("Current Gold: " + goldCount);
             // Update the dungeon map at that location to a '.' instead of the G
             dungeonMap[y][x] = '.';
         } else {
             // If there isn't gold, then print negative statement
-            System.out.println("There's no gold here to pick up.");
+            System.out.println("Fail! There's no gold here to pick up.");
         }
     }
 
@@ -111,4 +113,9 @@ public class Player {
     public void moveEast() {
         x += 1;
     }
+
+    public void gold(){
+        System.out.println("Gold owned: " + goldCount);
+    }
+
 }
