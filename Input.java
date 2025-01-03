@@ -10,23 +10,26 @@ public class Input {
     private String command;
     private int viewSize;
     private String filePath;
+    private String baseFilePath;
 
     public Input() {
         // Initialises the scanner to read from the system
         this.scanner = new Scanner(System.in);
         // Sets the view size from the Map class
         this.viewSize = Map.getViewSize();
+        // If errors in importing txt files, check to ensure the base file path is correct
+        this.baseFilePath = "dod-cjo33/Maps/";
     }
 
     // Function to list available maps and let the player choose one then set the file path
     public String chooseMap() {
         // Creates a file object which equals the folder Maps, this contains all of the potential maps the user can play
-        File folder = new File("Maps");
+        File folder = new File(baseFilePath);
         // Create a list of all the files from the maps folder which end in .txt
         File[] mapFiles = folder.listFiles((dir, name) -> name.endsWith(".txt"));
         // Check to ensure there are maps in the folder
         if (mapFiles == null || mapFiles.length == 0) {
-            System.out.println("No txt files found in the " + folder + " folder.");
+            System.out.println("No txt files found in the " + folder + " folder. Check file path.");
             return null;
         }
 
@@ -60,7 +63,7 @@ public class Input {
         // Set the file name of the map from the list that matches that choice value (-1 as we started at 1)
         String mapName = mapFiles[choice - 1].getName();
         // Return the full relative file path
-        return "Maps/" + mapName;
+        return baseFilePath + mapName;
     }
 
     // Function to let the player choose a difficulty level
