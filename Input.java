@@ -18,7 +18,7 @@ public class Input {
         // Sets the view size from the Map class
         this.viewSize = Map.getViewSize();
         // If errors in importing txt files, check to ensure the base file path is correct
-        this.baseFilePath = "dod-cjo33/Maps/";
+        this.baseFilePath = "Maps/";
     }
 
     // Function to list available maps and let the player choose one then set the file path
@@ -29,7 +29,8 @@ public class Input {
         File[] mapFiles = folder.listFiles((dir, name) -> name.endsWith(".txt"));
         // Check to ensure there are maps in the folder
         if (mapFiles == null || mapFiles.length == 0) {
-            System.out.println("No txt files found in the " + folder + " folder. Check file path.");
+            System.out.println("No txt files found in the " + folder + " folder.");
+            System.out.println("~~~~~ Check base file path in Input class ~~~~~");
             return null;
         }
 
