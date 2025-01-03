@@ -175,6 +175,7 @@ public class Game {
     }
 
     // This function takes the visible area created and prints it by iterating through the character array
+    // You can update the size of the visual area by changing the view size variable in Map
     private void printVisibleArea(char[][] visibleArea) {
         // Iterate through each row        
         for (char[] row : visibleArea) {
