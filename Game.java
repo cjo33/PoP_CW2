@@ -1,8 +1,7 @@
 import java.util.List;
 
 public class Game {
-    // Define our variables, 2D grid, player object
-    // player input and game running
+    // Define our variables
     private char[][] dungeonMap;
     private Player player;
     private Bot bot;
@@ -94,6 +93,7 @@ public class Game {
             // Update the bot's view
             bot.updateVisibleArea(dungeonMap);
             // // Print the bot's visible area for testing
+            // System.out.println("~~~~~~~~~~~~~~~~~~~~");
             // printVisibleArea(bot.getVisibleArea());
 
             // Bot goes first
@@ -154,9 +154,9 @@ public class Game {
             System.out.println("Lose! The bot has left the dungeon with enough gold!");
             quit();
         }
-        // If the gold that hasn't been pickup yet isn't enough with the player's current gold total to win the game, then exit
-        if (totalGold - bot.getGoldCount() < playerGoldRequired - player.getGoldCount()) {
-            System.out.println("Lose! The bot has picked up too much gold and thre isn't enough remaining in the dungeon to win!");
+        // If the bot has picked up so much gold such that it isn't possible for the player to pick up enough to win the game, then exit
+        if (totalGold - bot.getGoldCount() < playerGoldRequired) {
+            System.out.println("Lose! The bot has picked up too much gold and there isn't enough remaining in the dungeon to win!");
             quit();
         }
     }
@@ -200,7 +200,8 @@ public class Game {
                 // Bot needs 100% of the gold
                 botGoldRequired = (int) Math.ceil(totalGold * 1.00);
                 // Player only needs only half the map set amount
-                playerGoldRequired = (int) mapWin/2;
+                // Force to round up and return an integer
+                playerGoldRequired = (int) Math.ceil(mapWin / 2.0);
             }
             case "normal" -> {
                 // Bot and player need the set win condition

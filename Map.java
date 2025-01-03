@@ -39,7 +39,7 @@ public class Map {
             // Then take the second entry "3" and convert to integer
             winCondition = Integer.parseInt(br.readLine().split(" ", 2)[1]);
         } 
-        // If there is an error, tell the player which error it is and 
+        // If there is an error, tell the player which error it is and quit the game
         catch (IOException e) {
             System.out.println("Error reading map name: " + e.getMessage());
             Game.shouldQuit = true;
@@ -99,8 +99,7 @@ public class Map {
         return goldCoords;
     }
 
-    // This finds the exit coords that is used by the bot 
-    // in working out the closest target
+    // This finds the exit coords that is used by the bot in working out the closest target
     public static int[] findExitCoords(char[][] dungeonMap) {
         // Loops through the y and x coords searching for the E tile
         for (int y = 0; y < dungeonMap.length; y++) {
@@ -112,7 +111,7 @@ public class Map {
             }
         }
         // Return null if no exit tile is found, this is checked at the start
-        // ensures the player can win the game
+        // (ensures the player can win the game)
         return null; 
     }
 
@@ -131,11 +130,11 @@ public class Map {
             }
         }
 
-        // Checks to ensure that there are valid starting tiles
-        // This should be changed to ensur there are more than 2 valid tiles and then just a more simple error
+        // Checks to ensure that there are valid starting tiles, if not game will quit
+        // (just a precaution)
         if (floorTiles.isEmpty()) {
-            // throw new IllegalStateException("No valid floor tiles ('.') available on the map!");
-            System.exit(0);
+            System.out.println("Error: There are no floor tiles for the bot or player to start on");
+            Game.shouldQuit = true;
         }
 
         // Picks a random tile from the list

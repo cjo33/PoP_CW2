@@ -1,4 +1,4 @@
-name Claustrophobia 
+name Claustrophobia
 win 2
 ##########
 #...GE..G#

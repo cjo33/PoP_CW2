@@ -3,8 +3,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Bot {
-    // This is similar to how the Player class was set up
-    // Initialise the x,y, currentTile and gold couunt variables for the Bot
+    // Initialise variables for the Bot
     private int x;
     private int y;
     private char currentTile;
@@ -88,12 +87,10 @@ public class Bot {
                 int globalX = visCentreX - halfSize + j;
                 int globalY = visCentreY - halfSize + i;
                 // Go through checking for the different special tiles
-                if (tile == 'E') {
-                    exitCoords = new int[] {globalX, globalY};
-                } else if (tile == 'P') {
-                    playerCoords = new int[] {globalX, globalY};
-                } else if (tile == 'G') {
-                    goldCoordinates.add(new int[] {globalX, globalY});
+                switch (tile) {
+                    case 'E' -> exitCoords = new int[] {globalX, globalY};
+                    case 'P' -> playerCoords = new int[] {globalX, globalY};
+                    case 'G' -> goldCoordinates.add(new int[] {globalX, globalY});
                 }
             }
         }
@@ -209,7 +206,7 @@ public class Bot {
     // // This function finds the coordinates of the closest edge to the bot such that it can efficiently update its visible area as fast as possible
     // private int[] findClosestEdge(List<int[]> validEdges) {
     //     int[] closestEdge = null;
-    //     int shortestDistance = Integer.MAX_VALUE;
+    //     int shortestDistance = 999999;
     
     //     for (int[] edge : validEdges) {
     //         int distance = Math.abs(edge[0] - (x - (visCentreX - halfSize))) + Math.abs(edge[1] - (y - (visCentreY - halfSize)));
@@ -218,7 +215,6 @@ public class Bot {
     //             shortestDistance = distance;
     //         }
     //     }
-    
     //     return closestEdge;
     // }
 
@@ -324,7 +320,6 @@ public class Bot {
                 case 3 -> { newX = x; newY = y - 1; } // Up
             }
         }
-
         // Define our new x and y values
         x = newX;
         y = newY;
