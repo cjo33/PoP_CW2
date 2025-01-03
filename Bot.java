@@ -88,9 +88,15 @@ public class Bot {
                 int globalY = visCentreY - halfSize + i;
                 // Go through checking for the different special tiles
                 switch (tile) {
-                    case 'E' -> exitCoords = new int[] {globalX, globalY};
-                    case 'P' -> playerCoords = new int[] {globalX, globalY};
-                    case 'G' -> goldCoordinates.add(new int[] {globalX, globalY});
+                    case 'E':
+                        exitCoords = new int[] {globalX, globalY};
+                        break;
+                    case 'P':
+                        playerCoords = new int[] {globalX, globalY};
+                        break;
+                    case 'G':
+                        goldCoordinates.add(new int[] {globalX, globalY});
+                        break;
                 }
             }
         }
@@ -314,10 +320,26 @@ public class Bot {
             // Choose a random direction from the 4 cases
             int direction = random.nextInt(4);
             switch (direction) {
-                case 0 -> { newX = x + 1; newY = y; } // Right
-                case 1 -> { newX = x - 1; newY = y; } // Left
-                case 2 -> { newX = x; newY = y + 1; } // Down
-                case 3 -> { newX = x; newY = y - 1; } // Up
+                case 0:
+                    // Right
+                    newX = x + 1; 
+                    newY = y;
+                    break;
+                case 1:
+                    // Left
+                    newX = x - 1; 
+                    newY = y;
+                    break;
+                case 2:
+                    // Down
+                    newX = x; 
+                    newY = y + 1;
+                    break;
+                case 3:
+                    // Up
+                    newX = x; 
+                    newY = y - 1;
+                    break;
             }
         }
         // Define our new x and y values

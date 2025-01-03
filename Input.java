@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Input {
@@ -28,6 +29,9 @@ public class Input {
             System.out.println("No txt files found in the " + folder + " folder.");
             return null;
         }
+
+        // Compare the file names to ensure they are sorted correctly
+        Arrays.sort(mapFiles, (map1, map2) -> map1.getName().compareToIgnoreCase(map2.getName()));
 
         // Prompt the user for a choice of map
         System.out.println("Select a map: ");
@@ -117,7 +121,7 @@ public class Input {
         char nextTile;
         // Goes through the different commands of move nswe
         switch (command) {
-            case "move n" -> {
+            case "move n":
                 // Add the try method in case the map doesn't have a wall boarder
                 // This means it will catch the error and print Fail as opposed to ending the game
                 try {
@@ -133,9 +137,9 @@ public class Input {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Fail: You can't walk into a wall!");
                 }
-            }
+                break;
             // Same as above but checks and moves the player down
-            case "move s" -> {
+            case "move s":
                 try {
                     nextTile = dungeonMap[playerY + 1][playerX];
                     if (player.checkTile(nextTile)) {
@@ -145,9 +149,9 @@ public class Input {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Fail: You can't walk into a wall!");
                 }
-            }
+                break;
             // Same as above but checks and moves the player to the left
-            case "move w" -> {
+            case "move w":
                 try{
                     nextTile = dungeonMap[playerY][playerX - 1];
                     if (player.checkTile(nextTile)) {
@@ -157,9 +161,9 @@ public class Input {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Fail: You can't walk into a wall!");
                 }
-            }
+                break;
             // Same as above but checks and moves the player to the right
-            case "move e" -> {
+            case "move e":
                 try {
                     nextTile = dungeonMap[playerY][playerX + 1];
                     if (player.checkTile(nextTile)) {
@@ -169,19 +173,29 @@ public class Input {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println("Fail: You can't walk into a wall!");
                 }
-            }
+                break;
             // Call the hello function to print the player's target gold
-            case "hello" -> game.hello();
+            case "hello": 
+                game.hello();
+                break;
             // Call the gold functino to print the player's current gold count
-            case "gold" -> player.gold();
+            case "gold": 
+                player.gold();
+                break;
             // If they input pickup, call the pickup function to pickup the gold
-            case "pickup" -> player.pickupGold(dungeonMap);
+            case "pickup": 
+                player.pickupGold(dungeonMap);
+                break;
             // Look around and update the map
-            case "look" -> player.look();
+            case "look": 
+                player.look();
+                break;
             // Prints the help function
-            case "help" -> help();
+            case "help": 
+                help();
+                break;
             // Try and quit the game
-            case "quit" -> {
+            case "quit":
                 // If they exit and are on an exit tile then print you win
                 if (player.getCurrentTile() == 'E' && player.getGoldCount() >= game.getPlayerGoldReq()) {
                     System.out.println("Win! You collected " + player.getGoldCount() + " out of " + game.getPlayerGoldReq() + " gold!");
@@ -194,7 +208,7 @@ public class Input {
                     System.out.println("Lose! You are not on an exit tile");
                     game.quit();
                 }
-            }
+                break;
         }
     }
 

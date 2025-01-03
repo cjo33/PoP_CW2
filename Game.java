@@ -196,31 +196,30 @@ public class Game {
         }
         // Set the requirements based on what difficulty is set to in Main
         switch (difficulty.toLowerCase()) {
-            case "easy" -> {
+            case "easy":
                 // Bot needs 100% of the gold
                 botGoldRequired = (int) Math.ceil(totalGold * 1.00);
                 // Player only needs only half the map set amount
                 // Force to round up and return an integer
                 playerGoldRequired = (int) Math.ceil(mapWin / 2.0);
-            }
-            case "normal" -> {
+                break;
+            case "normal":
                 // Bot and player need the set win condition
                 botGoldRequired = mapWin;
                 playerGoldRequired = mapWin;
-            }
-            case "hard" -> {
+                break;
+            case "hard":
                 // Bot requires 25% of the total gold to exit
                 botGoldRequired = (int) Math.ceil(totalGold * 0.25);
                 // Player needs the map set amount
                 playerGoldRequired = mapWin;
-            }
-            default -> {
+                break;
+            default:
                 // If invalid difficulty mode, tell the player it is invalid and what they can choose from
                 System.out.println("Invalid difficulty level: " + difficulty);
                 System.out.println("Please try again and choose from easy, normal or hard");
                 // Then quit the game
                 quit();
-            }
         }
     }
     // If the game is quit, set boolean isRunning to false and shouldQuit to true and end the while loop in start

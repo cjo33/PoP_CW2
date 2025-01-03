@@ -50,24 +50,19 @@ public class Player {
     // Check if the player can move onto the next tile
     public boolean checkTile(char tile) {
         switch (tile) {
-            case '#' -> {
+            case '#':
                 System.out.println("Fail: You can't walk into a wall!"); 
                 return false;
-            }
-            case '.' -> {
+            case '.':
                 return true;
-            }
-            case 'G' -> {
+            case 'G':
                 return true;
-            } 
-            case 'E' -> {
+            case 'E':
                 return true;
-            }
             // Will return false if the map contains tiles not in initial description (just a precaution)
-            default -> {
+            default:
                 System.out.println("Unknown tile type: " + tile); 
                 return false;
-            }
         }
     }
 
