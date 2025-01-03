@@ -31,10 +31,12 @@ public class Input {
 
         // Prompt the user for a choice of map
         System.out.println("Select a map: ");
+        System.out.println("(Higher number = more challenging)");
         // Iterate through the list of maps and print them to let the user choose from
         // (add one for asthetics, make it more intuitive for the user to start from 1 rather than 0)
         for (int i = 0; i < mapFiles.length; i++) {
-            System.out.println((i + 1) + ". " + mapFiles[i].getName());
+            // System.out.println((i + 1) + ". " + mapFiles[i].getName());
+            System.out.println(mapFiles[i].getName());
         }
 
         // Initialise choice as an invalid option

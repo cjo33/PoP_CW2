@@ -40,7 +40,7 @@ public class Game {
             // Display the welcome message
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             System.out.println("Welcome to Dungeon's of Doom!");
-            System.out.println("You are playing on the " + Map.getMapName() + "map.");
+            System.out.println("You are playing on the " + Map.getMapName() + " map.");
             System.out.println("You are playing on " + difficulty + " mode.");
             System.out.println("The objective of the game is to move around the map, pickup enough gold and exit the dungeon.");
             System.out.println("Beware! There is a dangerous bot who is lurking, trying to catch you or pick up the gold for themselves.");
